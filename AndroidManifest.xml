@@ -13,9 +13,9 @@
     
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" android:logo="@drawable/ic_launcher">
+        android:theme="@style/AppTheme" android:logo="@drawable/icon">
         <activity
             android:name="skaftanis.smyc.newepisodes.SplashScreen"
             android:label="@string/app_name" >
