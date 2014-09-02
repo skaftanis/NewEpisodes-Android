@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
 		
 		
 		if (isFirstLaunch()) {
-			AddSerrie();
+			AddSerrie("Type the number of the season you want to start");
 		} 
 		
 		if (isOnline())
@@ -224,11 +224,18 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public void onClick(View arg0) {
 			Clicked[arg0.getId()]=true;
-			EditBox("Set manually the next episode follwing the right format");
-			
+			//EditBox("Set manually the next episode follwing the right format");
+			for (int i=0; i< noOfEpisodesStatic; i++) {
+				Button temp = (Button)findViewById(i);
+				if ( Clicked[temp.getId()] == true ) {
+						SerieName=Names[temp.getId()];
+						AddSeason(createLinkStep1(Names[temp.getId()]).replace(".txt", ""), "Set manually the next episode from here");
+					    Clicked[temp.getId()]=false;
+				}						
 		}
 		
-	};
+	}
+};
 	
 	private OnClickListener sawItClicked=new OnClickListener() {
 
@@ -275,7 +282,15 @@ public class MainActivity extends ActionBarActivity {
 			//Toast.makeText(getApplicationContext(), "Cancle selected",	Toast.LENGTH_LONG).show();
 			
 			//give the possibility to select your own episode
-			EditBox("Don't worry! You can set your own next episode from here");
+		//	EditBox("Don't worry! You can set your own next episode from here"); //OLD WAY
+			for (int i=0; i< noOfEpisodesStatic; i++) {  //NEW WAY
+				Button temp = (Button)findViewById(i);
+				if ( Clicked[temp.getId()] == true ) {
+						SerieName=Names[temp.getId()];
+						AddSeason(createLinkStep1(Names[temp.getId()]).replace(".txt", "") , "Don't worry! You can set your own next episode from here"  );
+					    Clicked[temp.getId()]=false;
+				}						
+		}
 		}
 	}
 
@@ -421,7 +436,7 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.Add) { //adding a new serie staff
- 			AddSerrie();
+ 			AddSerrie("Type the number of the season you want to start");
 			return true;
 		}
 		if (id == R.id.Refresh) { //refresh the series
@@ -526,7 +541,7 @@ public class MainActivity extends ActionBarActivity {
 	    }
 	   }  
 	
-	public void AddSerrie () {
+	public void AddSerrie (final String msg) {
 		// Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
 		final EditText txtUrl = new EditText(this);
 		
@@ -546,7 +561,7 @@ public class MainActivity extends ActionBarActivity {
 				url=url+input;
 				url=url.replaceAll("\\s","+");  //creates the torrentz url of the serrie
 				//helpString=url;
-				AddSeason(url); //add Season to the end of the serie's link
+				AddSeason(url,msg); //add Season to the end of the serie's link
 			}
 		})
 		.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -557,7 +572,14 @@ public class MainActivity extends ActionBarActivity {
 		
 	}
 	
-	public void AddSeason (String start) {
+	public String createLinkStep1(String input) {
+		String url="https://torrentz.eu/search?f=";
+		url=url+input;
+		url=url.replaceAll("\\s","+");  //creates the torrentz url of the serrie
+		return url;
+	}
+	
+	public void AddSeason (String start, String msg) {
 		// Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
 		final EditText txtUrl = new EditText(this);
 		//txtUrl.setText("0",TextView.BufferType.EDITABLE);
@@ -567,7 +589,7 @@ public class MainActivity extends ActionBarActivity {
 		txtUrl.setInputType(InputType.TYPE_CLASS_PHONE);
 		new AlertDialog.Builder(this)
 		.setTitle("Add Season")
-		.setMessage("Type the number of the season you want to start")
+		.setMessage(msg)
 		
 		
 		.setView(txtUrl)
