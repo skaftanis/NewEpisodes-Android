@@ -26,7 +26,10 @@ import org.apache.http.util.EntityUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -158,7 +161,7 @@ public class MainActivity extends ActionBarActivity {
 				t1.setBackgroundResource(R.drawable.frame);
 			}
 			else {
-				printedText=textViewName+"\n"+"There is not a new Episode";
+				printedText=textViewName+"\n"+"There is not a new Episode. Next:"+InfoTable[i][2];
 				t1.setBackgroundResource(R.drawable.frame2);
 			}
 			t1.setText(printedText);
@@ -445,8 +448,8 @@ public class MainActivity extends ActionBarActivity {
 		if (id == R.id.About) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("About New Episodes");
-			builder.setMessage("New Episodes is an app that you help to watch your favoutite tv series. It informs"
-					+ "you when a new episode is available in torrents, so you can watch it. Created by Spiros Kaftanis");
+			builder.setMessage("New Episodes is an app that helps you to watch your favoutite tv series. It informs"
+					+ "you when a new episode is available in torrents, so you can watch it. Created by Spiros Kaftanis. Version 1.0 (Builded: 2/9/2014)");
 			builder.setPositiveButton("OK", null);
 			AlertDialog dialog = builder.show();
 
@@ -548,7 +551,7 @@ public class MainActivity extends ActionBarActivity {
 		//Input Dialog 
 		txtUrl.setHint("eg. How I met your mother");
 
-		new AlertDialog.Builder(this)
+		AlertDialog dialog = new AlertDialog.Builder(this)
 		.setTitle("Add Serrie")
 		.setMessage("Type the name of the new serrie you want to watch")
 		.setView(txtUrl)
@@ -568,8 +571,11 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 			}
 		})
-		.show(); 
+		.create(); 
 		
+	dialog.show();
+	
+
 	}
 	
 	public String createLinkStep1(String input) {
@@ -580,24 +586,24 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	public void AddSeason (String start, String msg) {
+		
 		// Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
 		final EditText txtUrl = new EditText(this);
+		
 		//txtUrl.setText("0",TextView.BufferType.EDITABLE);
 		helpString=start;
 		//Input Dialog 
 		txtUrl.setHint("eg. 02");
 		txtUrl.setInputType(InputType.TYPE_CLASS_PHONE);
-		new AlertDialog.Builder(this)
+		final AlertDialog dialog = new AlertDialog.Builder(this)
 		.setTitle("Add Season")
-		.setMessage(msg)
-		
-		
+		.setMessage(msg)				
 		.setView(txtUrl)
 		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				//create the final String and save it to static variable EndLink 
 				String input = txtUrl.getText().toString();
-				if (Integer.parseInt(input)/10 < 1)
+				if (input.length()==1)
 					input="0"+input;
 				SerieCode="S"+input; //add serie's season number in this static string
 				input=helpString+"+"+"S"+input;
@@ -612,8 +618,40 @@ public class MainActivity extends ActionBarActivity {
 			public void onClick(DialogInterface dialog, int whichButton) {
 			}
 		})
-		.show(); 
+		.create(); 
+		dialog.show();
+		dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+
+		txtUrl.addTextChangedListener(new TextWatcher(){
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				 if(txtUrl.getText().toString().length()==0 || txtUrl.getText().toString().length() > 2 )
+					 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+				 else
+					 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+
+				
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			
+			
+		});
 	}
+	
 	
 	public void AddEpisode(String start) {
 		// Toast.makeText(this, "Clicked on Button", Toast.LENGTH_LONG).show();
@@ -623,15 +661,15 @@ public class MainActivity extends ActionBarActivity {
 				//Input Dialog 
 				txtUrl.setHint("eg. 09");
 				txtUrl.setInputType(InputType.TYPE_CLASS_NUMBER);
-				new AlertDialog.Builder(this)
+				final AlertDialog dialog =  new AlertDialog.Builder(this)
 				.setTitle("Add Episode")
-				.setMessage("Type the number of the episode you want to start")
+				.setMessage("Type the number of the episode you want to set")
 				.setView(txtUrl)
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						//create the final String and save it to static variable EndLink 
 						String input = txtUrl.getText().toString();
-						if (Integer.parseInt(input)/10 < 1)
+						if (input.length()==1)
 							input="0"+input;
 						SerieCode+="E"+input; //add the episode in SerieCode. SerieCode Format = SxxExx						
 						//WriteToFile("names.txt", SerieName, "", ""); //writes serie name to names.txt
@@ -650,8 +688,38 @@ public class MainActivity extends ActionBarActivity {
 					public void onClick(DialogInterface dialog, int whichButton) {
 					}
 				})
-				.show(); 
-		
+				.create(); 
+				dialog.show();
+				dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+				txtUrl.addTextChangedListener(new TextWatcher(){
+
+					@Override
+					public void afterTextChanged(Editable arg0) {
+						 if(txtUrl.getText().toString().length()==0 || txtUrl.getText().toString().length() > 2 )
+							 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+						 else
+							 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+
+						
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start, int count,
+							int after) {
+						
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int start, int before,
+							int count) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					
+					
+				});
+
 	}
 	
 	
