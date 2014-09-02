@@ -87,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
 			AddSerrie();
 		} 
 		
-		if (isNetworkAvailable())
+		if (isOnline())
 				Refresh();
 		else {
 			setContentView(R.layout.no_internet);
@@ -102,6 +102,8 @@ public class MainActivity extends ActionBarActivity {
 		
 	}
 	
+	
+		
 // ----------------------------------------------Refresh---------------------------------------------------
 
 	//The Basic method. Reads the array with all the info from CheckStaff class and updates the universe
@@ -456,12 +458,22 @@ public class MainActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
-	
-	private boolean isNetworkAvailable() {
+	 
+	private boolean isNetworkAvailable() {  //NOT USED ANYMORE. Replaced by isOnline() 
 	    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
+	}
+
 	
 // ----------------------------------------------For Files (and adding)------------------------------------------------
 
