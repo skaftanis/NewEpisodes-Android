@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.os.Environment;
+import android.widget.Button;
+import android.widget.TextView;
 
 
 public class CheckStaff {
@@ -87,6 +89,8 @@ public class CheckStaff {
 		return Episode;
 	}
 	
+	
+	
 	//Guess the next episode. If current is S02E12 next might be S02E13
 	private static String nextEpisodeGuess (String current) {
 		
@@ -140,7 +144,6 @@ public class CheckStaff {
 		
 			serieName=paths.get(i);
 			File sdCard = Environment.getExternalStorageDirectory();
-			//serieName=serieName.replace("/mnt/sdcard/NewEpisodes/", ""); //delete first part of the path
 			serieName=serieName.replace(sdCard.getAbsolutePath()+"/"+"NewEpisodes"+"/", "");
 			
 			returnArray[i][0]=serieName;
@@ -188,10 +191,32 @@ public class CheckStaff {
 				e.printStackTrace();
 			}
 	     	
-	     	if (output.contains(serieEpisode)) thereIs=true;
+	     	serieName=serieName.replace(".txt", "");
+	     	
+	     	//create NewSeaechString which contains <b> and </b> characters for better search in html (bug fix)
+	    	String [] splited = (serieName+" "+serieEpisode).split("\\s+");
+			String NewSearchString = "";
+			for (int j=0; j<splited.length;j++){
+				NewSearchString+="<b>"+splited[j]+"</b>"+" ";
+			}
+	     	
+			int lastIndex = 0;
+			int count =0;
+
+			while(lastIndex != -1){
+
+			       lastIndex = output.indexOf(NewSearchString,lastIndex);
+
+			       if( lastIndex != -1){
+			             count ++;
+			             lastIndex+=NewSearchString.length();
+			      }
+			}
+			
+	     	
+	     	if (output.contains(serieEpisode) && count>0)  thereIs=true; 
 	     	else thereIs=false;
 			
-          // returnArray[i][1]=(thereIs ? "1" : "0");
             if (thereIs) returnArray[i][1]="1";
             else returnArray[i][1]="0";
             
