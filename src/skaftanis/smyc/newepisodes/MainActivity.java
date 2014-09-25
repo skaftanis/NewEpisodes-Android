@@ -23,6 +23,10 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -32,10 +36,12 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -73,6 +79,7 @@ public class MainActivity extends ActionBarActivity {
 	public static boolean Clicked[] = new boolean [20]; //true when button in pos i clicked
 	
 	public static boolean sure;
+	 private AdView adView;
 	
 // ----------------------------------------------onCreate---------------------------------------------------
 	@Override
@@ -80,23 +87,33 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		//AdView adView = (AdView)this.findViewById(R.id.adView);
+		//AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).addTestDevice("EAD625570A28B498CEA7ECF661A068D4").build();
+		//adView.loadAd(adRequest);
+
+		
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
+
 		
 		if (isFirstLaunch()) {
 			AddSerrie("Type the number of the season you want to start");
 		} 
 		
-		if (isOnline())
+		if (isOnline()) {
+				//ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait...", true);
 				Refresh();
+				//dialog.dismiss();
+		}
 		else {
 			setContentView(R.layout.no_internet);
 			Button oneMoreTry = (Button)findViewById(R.id.button1);
 			oneMoreTry.setOnClickListener(tryAgainClicked);
 		}
+	
 	
 			
 		//TextView textViewToChange = (TextView) findViewById(R.id.text);
@@ -449,7 +466,7 @@ public class MainActivity extends ActionBarActivity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("About New Episodes");
 			builder.setMessage("New Episodes is an app that helps you to watch your favoutite tv series. It informs"
-					+ "you when a new episode is available in torrents, so you can watch it. Created by Spiros Kaftanis. Version 1.0 (Builded: 2/9/2014)");
+					+ "you when a new episode is available in torrents, so you can watch it. Created by Spiros Kaftanis. Version 1.1 (Builded: 25/9/2014)");
 			builder.setPositiveButton("OK", null);
 			AlertDialog dialog = builder.show();
 
