@@ -195,6 +195,12 @@ public class CheckStaff {
 	     	
 	     	//create NewSeaechString which contains <b> and </b> characters for better search in html (bug fix)
 	    	String [] splited = (serieName+" "+serieEpisode).split("\\s+");
+	    	
+	    	//convert first word letter to upper case
+	    	for (int j=0;j<splited.length;j++)
+				splited[j]=splited[j].substring(0, 1).toUpperCase() + splited[j].substring(1);
+	    	
+	    	
 			String NewSearchString = "";
 			for (int j=0; j<splited.length;j++){
 				NewSearchString+="<b>"+splited[j]+"</b>"+" ";
